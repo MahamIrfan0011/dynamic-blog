@@ -8,7 +8,7 @@ export default function Contact() {
     <div className="max-w-2xl mx-auto p-8 mt-12 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl rounded-lg text-center">
       <h1 className="text-4xl font-bold mb-4 animate-fade-in">📬 Get in Touch</h1>
       <p className="text-lg opacity-90 mb-6">
-        Let's connect! Feel free to reach out for any queries or collaborations.
+        Let&#39;s connect! Feel free to reach out for any queries or collaborations.
       </p>
 
       <div className="space-y-6">

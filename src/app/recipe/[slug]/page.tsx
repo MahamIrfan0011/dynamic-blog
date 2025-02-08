@@ -11,6 +11,13 @@ interface Recipe {
   imageUrl: string;
 }
 
+type PageParams = {
+  params: {
+    slug: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
 // Fetch All Recipes for Static Paths
 export async function generateStaticParams() {
   const recipes = await sanityClient.fetch(`*[_type == "recipe"]{ slug }`);
@@ -34,11 +41,7 @@ async function getRecipe(slug: string): Promise<Recipe | null> {
 }
 
 // Dynamic Page Component
-export default async function RecipePage({
-  params,
-}: {
-  params: { slug: string }
-}) {
+export default async function RecipePage({ params, searchParams }: PageParams) {
   const recipe = await getRecipe(params.slug);
 
   if (!recipe) {

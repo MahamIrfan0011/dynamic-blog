@@ -1,8 +1,8 @@
 import { sanityClient } from "@/sanity/lib/client";
 import Image from "next/image";
-import { FaClock, FaListUl } from "react-icons/fa"; // ⏳ Icons added
+import { FaClock, FaListUl } from "react-icons/fa";
 
-// 📝 Recipe Type Define Karo
+// 📝 Recipe Type
 interface Recipe {
   title: string;
   ingredients: string[];
@@ -11,7 +11,15 @@ interface Recipe {
   imageUrl: string;
 }
 
-// 📌 Function Type Specify Karo
+// ✅ **Fetch All Recipes for Static Paths**
+export async function generateStaticParams() {
+  const recipes = await sanityClient.fetch(`*[_type == "recipe"]{ slug }`);
+  return recipes.map((recipe: { slug: { current: string } }) => ({
+    slug: recipe.slug.current,
+  }));
+}
+
+// ✅ **Fetch Recipe Data**
 async function getRecipe(slug: string): Promise<Recipe | null> {
   return await sanityClient.fetch(
     `*[_type == "recipe" && slug.current == $slug][0]{
@@ -25,6 +33,7 @@ async function getRecipe(slug: string): Promise<Recipe | null> {
   );
 }
 
+// ✅ **Dynamic Page**
 export default async function RecipePage({ params }: { params: { slug: string } }) {
   const recipe = await getRecipe(params.slug);
 
@@ -38,7 +47,6 @@ export default async function RecipePage({ params }: { params: { slug: string } 
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      {/*  Image Section */}
       <div className="relative w-full h-[400px] rounded-lg overflow-hidden shadow-md">
         <Image
           src={recipe.imageUrl || "/placeholder.jpg"}
@@ -49,17 +57,11 @@ export default async function RecipePage({ params }: { params: { slug: string } 
           className="object-cover"
         />
       </div>
-
-      {/*  Recipe Details */}
       <h1 className="text-4xl font-bold mt-4 text-gray-800">{recipe.title}</h1>
-
-      {/*  Cooking Time */}
       <div className="flex items-center text-gray-600 mt-2">
         <FaClock className="mr-2 text-lg text-blue-500" />
         <p className="text-lg font-medium">{recipe.cookingTime} minutes</p>
       </div>
-
-      {/*  Ingredients List */}
       <div className="mt-6">
         <h2 className="text-2xl font-semibold flex items-center">
           <FaListUl className="mr-2 text-green-500" /> Ingredients
@@ -70,8 +72,6 @@ export default async function RecipePage({ params }: { params: { slug: string } 
           ))}
         </ul>
       </div>
-
-      {/*  Instructions */}
       <div className="mt-6">
         <h2 className="text-2xl font-semibold">Instructions</h2>
         <div className="mt-2 space-y-3 text-lg text-gray-700">

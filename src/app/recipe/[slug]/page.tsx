@@ -11,13 +11,6 @@ interface Recipe {
   imageUrl: string;
 }
 
-// Props type for the page component
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
-
 // Fetch All Recipes for Static Paths
 export async function generateStaticParams() {
   const recipes = await sanityClient.fetch(`*[_type == "recipe"]{ slug }`);
@@ -41,7 +34,11 @@ async function getRecipe(slug: string): Promise<Recipe | null> {
 }
 
 // Dynamic Page Component
-export default async function RecipePage({ params }: PageProps) {
+export default async function RecipePage({
+  params,
+}: {
+  params: { slug: string }
+}) {
   const recipe = await getRecipe(params.slug);
 
   if (!recipe) {

@@ -15,7 +15,6 @@ type PageParams = {
   params: {
     slug: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 // Fetch All Recipes for Static Paths
@@ -41,7 +40,7 @@ async function getRecipe(slug: string): Promise<Recipe | null> {
 }
 
 // Dynamic Page Component
-export default async function RecipePage({ params, searchParams }: PageParams) {
+export default async function RecipePage({ params }: PageParams) {
   const recipe = await getRecipe(params.slug);
 
   if (!recipe) {

@@ -2,7 +2,7 @@ import { sanityClient } from "@/sanity/lib/client";
 import Image from "next/image";
 import { FaClock, FaListUl } from "react-icons/fa";
 
-// 📝 Recipe Type
+// Recipe Type
 interface Recipe {
   title: string;
   ingredients: string[];
@@ -11,7 +11,14 @@ interface Recipe {
   imageUrl: string;
 }
 
-// ✅ **Fetch All Recipes for Static Paths**
+// Props type for the page component
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+// Fetch All Recipes for Static Paths
 export async function generateStaticParams() {
   const recipes = await sanityClient.fetch(`*[_type == "recipe"]{ slug }`);
   return recipes.map((recipe: { slug: { current: string } }) => ({
@@ -19,13 +26,13 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ **Fetch Recipe Data**
+// Fetch Recipe Data
 async function getRecipe(slug: string): Promise<Recipe | null> {
   return await sanityClient.fetch(
     `*[_type == "recipe" && slug.current == $slug][0]{
       title, 
-      ingredients, 
-      instructions, 
+      ingredients,
+      instructions,
       cookingTime,
       "imageUrl": image.asset->url
     }`,
@@ -33,8 +40,8 @@ async function getRecipe(slug: string): Promise<Recipe | null> {
   );
 }
 
-// ✅ **Dynamic Page**
-export default async function RecipePage({ params }: { params: { slug: string } }) {
+// Dynamic Page Component
+export default async function RecipePage({ params }: PageProps) {
   const recipe = await getRecipe(params.slug);
 
   if (!recipe) {
